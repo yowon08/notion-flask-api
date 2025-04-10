@@ -54,7 +54,7 @@ def get_notion_content():
         print("🔥 Notion API error:", e)
         return jsonify({"error": "Notion API error"}), 500
 
-# 🔥 Render용 포트 바인딩 필수
+# 🔥 Render용 포트 바인딩
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
