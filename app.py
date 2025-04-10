@@ -41,3 +41,6 @@ def get_notion_content():
     except Exception as e:
         print("🔥 Notion API error:", e)
         return jsonify({"error": "Notion API error"}), 500
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
