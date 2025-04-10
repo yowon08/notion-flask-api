@@ -26,21 +26,25 @@ def get_notion_content():
     }
 
     try:
-        res = requests.get(url, headers=headers)
-        res.raise_for_status()
+    res = requests.get(url, headers=headers)
+    print("🔗 요청 URL:", url)
+    print("📨 응답 상태 코드:", res.status_code)
+    print("📄 응답 본문:", res.text)
 
-        blocks = res.json().get("results", [])
-        texts = []
-        for block in blocks:
-            paragraph = block.get("paragraph", {})
-            rich_text = paragraph.get("rich_text", [])
-            if rich_text:
-                texts.append(rich_text[0].get("plain_text", ""))
+    res.raise_for_status()
 
-        return jsonify({"blocks": texts})
-    except Exception as e:
-        print("🔥 Notion API error:", e)
-        return jsonify({"error": "Notion API error"}), 500
+    blocks = res.json().get("results", [])
+    texts = []
+    for block in blocks:
+        paragraph = block.get("paragraph", {})
+        rich_text = paragraph.get("rich_text", [])
+        if rich_text:
+            texts.append(rich_text[0].get("plain_text", ""))
+
+    return jsonify({"blocks": texts})
+except Exception as e:
+    print("🔥 Notion API error:", e)
+    return jsonify({"error": "Notion API error"}), 500
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
