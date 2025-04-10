@@ -22,7 +22,7 @@ def get_block_children(block_id):
         text = extract_text_from_block(block)
         if text:
             blocks.append(text)
-        # 자식 블록이 있으면 재귀적으로 가져오기
+        # 자식 블록이 있다면 재귀
         if block.get("has_children"):
             blocks.extend(get_block_children(block["id"]))
 
@@ -34,13 +34,14 @@ def extract_text_from_block(block):
         block_type = block["type"]
         content = block.get(block_type, {})
 
-        # rich_text가 있을 경우
-        if "rich_text" in content:
-            return ''.join([rt["plain_text"] for rt in content["rich_text"]])
-
-        # title 속성 (예: 페이지나 데이터베이스 제목 등)
+        # title (예: 페이지 제목)
         if "title" in content:
             return ''.join([t["plain_text"] for t in content["title"]])
+
+        # 일반적인 텍스트 블록
+        if "rich_text" in content:
+            return ''.join([t["plain_text"] for t in content["rich_text"]])
+
     except Exception:
         pass
 
@@ -49,7 +50,7 @@ def extract_text_from_block(block):
 
 @app.route("/")
 def home():
-    return "✅ Notion API 서버가 정상 동작 중입니다."
+    return "✅ Notion API 서버가 실행 중입니다!"
 
 
 @app.route("/notion")
@@ -59,7 +60,7 @@ def notion():
         return jsonify({"error": "Missing page_id"}), 400
 
     try:
-        # 하이픈(-) 제거
+        # 하이픈 제거
         page_id = page_id.replace("-", "")
         blocks = get_block_children(page_id)
         return jsonify({"blocks": blocks})
